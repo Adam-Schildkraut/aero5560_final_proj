@@ -1,0 +1,305 @@
+\section{Lateral Autopilot Subsystem}
+
+The objective is to develop a heading-hold autopilot that will make the aircraft seek and
+track a specified heading (Yaw angle) by using the aileron. A yaw damper must also be
+designed to improve the Dutch Roll dynamics.
+
+\subsection{Wing Leveller (WL) Compensator Design and Analysis}
+
+To overcome the inherent problem in using aileron to directly control heading, you need a wing-leveller which seeks to use aileron to hold bank angle. The final heading hold guidance loop can then use bank angle to control heading.
+\begin{itemize}
+\item Determine $G^{\phi}_{\delta a}$ of the supplied aircraft.
+\item Construct a feedback loop that controls bank angle using aileron and illustrate the block diagram. Label all the blocks and signals.
+\item Use MATLAB sisotool to design a compensator that can achieve the following specifications (for the time domain specifications use a $30 \degree$ bank angle step input):
+\begin{itemize}
+\item Crossover frequency $\omega_c$ (-3 dB point) in the region of 2 to 10 rad/s (you may vary this range depending on your findings and depending on the airspeed).
+\item Noise bandwidth of 20 rad/s
+\item Settling time: 3 s
+\item Steady state error: less than 1\%
+\item Maximum overshoot: less than 20\%
+\item Aileron deflection does not exceed $\pm 20 \degree$
+\end{itemize}
+\item You must investigate at least THREE options for the compensator. Document the evolution of your design.
+\item For each design iteration, show the compensator transfer function and how the responses improve with each design iteration using root locus, Bode plot, and step response. Tabulate the key responses and compare them to the specifications.
+\item Explain your design approach and justify your choices. Discuss whether there is any room for improvement for your final design.
+\end{itemize}
+
+\subsubsection{WL Plant Transfer Function}
+Nonlinear Dynamics and Trim
+\begin{equation}
+\dot{X} \;=\; f(X,U), \qquad f(X_0,U_0)=0,
+\end{equation}
+and define perturbations \(\delta x := X - X_0\), \(\delta u := U - U_0\).
+
+Then perform linearisation about trim.
+\begin{equation}
+\delta \dot{x} \;=\; A\,\delta x \;+\; B\,\delta u, 
+\qquad
+A := \left.\frac{\partial f}{\partial X}\right|_{(X_0,U_0)},\;
+B := \left.\frac{\partial f}{\partial U}\right|_{(X_0,U_0)}.
+\end{equation}
+
+Let the lateral state be
+\begin{equation}
+\delta x_{\mathrm{lat}} \;=\; \begin{bmatrix} \delta v & \delta p & \delta r & \delta\phi & \delta\psi \end{bmatrix}^{\!\top},
+\quad
+\delta u_{\mathrm{lat}} \;=\; \begin{bmatrix} \delta_a & \delta_r \end{bmatrix}^{\!\top},
+\end{equation}
+with corresponding sub-matrices \(A_{\mathrm{lat}}\in\mathbb{R}^{5\times 5}\), \(B_{\mathrm{lat}}\in\mathbb{R}^{5\times 2}\) such that
+\begin{equation}
+\delta \dot{x}_{\mathrm{lat}} \;=\; A_{\mathrm{lat}}\,\delta x_{\mathrm{lat}} \;+\; B_{\mathrm{lat}}\,\delta u_{\mathrm{lat}}.
+\end{equation}
+
+Select bank angle as the output:
+\[
+y \;=\; \delta\phi \;=\; C_\phi\,\delta x_{\mathrm{lat}}, 
+\qquad
+C_\phi \;=\; \begin{bmatrix} 0 & 0 & 0 & 1 & 0 \end{bmatrix},
+\qquad D=0.
+\]
+
+% 5) Transfer function from aileron to bank angle
+Taking Laplace transforms (zero initial conditions),
+\[
+\delta X_{\mathrm{lat}}(s) \;=\; (sI - A_{\mathrm{lat}})^{-1} B_{\mathrm{lat}} \,\delta U_{\mathrm{lat}}(s),
+\]
+and hence the SISO transfer function from aileron \(\delta_a\) to bank angle \(\phi\) is
+\[
+G^{\phi}_{\delta_a}(s)
+\;=\;
+C_\phi \,(sI - A_{\mathrm{lat}})^{-1}\, B_{\mathrm{lat}} \, e_1 \;+\; D
+\;=\;
+C_\phi \,(sI - A_{\mathrm{lat}})^{-1}\, B_{\mathrm{lat}}(:,1),
+\]
+where \(e_1 = \begin{bmatrix}1 & 0\end{bmatrix}^{\!\top}\) selects the aileron input and \(D=0\).
+
+% 6) Structure of the result
+The denominator of \(G^{\phi}_{\delta_a}(s)\) is \(\det(sI - A_{\mathrm{lat}})\) (the lateral characteristic polynomial), while the numerator is the appropriate entry of the adjugate of \((sI - A_{\mathrm{lat}})\) multiplied by \(B_{\mathrm{lat}}(:,1)\) and \(C_\phi\).
+% Its poles correspond to roll subsidence, spiral mode, and the Dutch–roll pair for the trimmed flight condition.
+
+Polynomial Form;
+\begin{equation}
+G^{\phi}_{\delta_a}(s)
+= \dfrac{-22.02\,s^{2} - 17.73\,s - 144.1}
+        {s^{4} + 3.514\,s^{3} + 8.679\,s^{2} + 20.44\,s + 0.3322}
+\end{equation}
+Factorised Form;
+\begin{equation}
+G^{\phi}_{\delta_a}(s)
+= \dfrac{-22.017\,(s^{2} + 0.8055\,s + 6.545)}
+        {(s+2.924)\,(s+0.01636)\,(s^{2} + 0.5739\,s + 6.944)}
+\end{equation}
+
+\subsubsection{WL Loop Architecture}
+
+Figure~\ref{fig:wl-arch} shows the wing–leveller (WL) inner loop that regulates
+bank angle $\phi$ using aileron $\delta_a$.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[auto,>=latex',node distance=13mm]
+  % nodes
+  \node [coordinate] (input) {};
+  \node [sum, right=8mm of input] (sum) {$\scriptstyle \sum$};
+  \node [block, right=8mm of sum, align=center, minimum width=22mm] (C) {$C_{\mathrm{WL}}(s)$\\[1pt] \footnotesize WL compensator};
+  \node [block, right=8mm of C, align=center, minimum width=19mm] (act) {$G_{\mathrm{act}}(s)$\\[1pt]\footnotesize aileron servo};
+  \node [block, right=8mm of act, align=center, minimum width=26mm] (G) {$G^{\phi}_{\delta a}(s)$\\[1pt]\footnotesize aircraft lateral plant};
+  \node [coordinate, right=8mm of G] (out) {};
+  \node [block, below=12mm of G, align=center, minimum width=22mm] (H) {$H(s)$\\[1pt]\footnotesize sensor model};
+  \node [block, below=12mm of act, align=center, minimum width=22mm] (sat) {$\mathrm{sat}_{\pm 20^\circ}$\\[1pt]\footnotesize aileron limit};
+  % connections
+  \draw [->] (input) -- node[pos=0.0, above]{$\phi_c$} (sum);
+  \draw [->] (sum) -- node[pos=0.2,above]{$e_\phi$} (C);
+  \draw [->] (C) -- node[above]{$u$} (act);
+  \draw [->] (act) -- node[above]{$\delta_a$} (G);
+  \draw [->] (G) -- node[pos=0.55, above]{$\phi$} (out);
+  % feedback path
+  \draw (out) |- (H);
+  \draw [->] (H) -| node[pos=0.95, left]{$-$} (sum.south);
+  % anti-windup tap (optional)
+  \draw (act.south) -- ++(0,-4mm) -| (sat.north);
+  \draw [->] (sat.west) -| node[pos=0.98, below] {\footnotesize AW} (C.south);
+\end{tikzpicture}
+\caption{Wing–leveller inner loop. The plant is the SISO map $G^{\phi}_{\delta a}(s)$.
+The aileron servo $G_{\mathrm{act}}(s)$ is modelled as first order and includes
+a hard limit $\pm 20^\circ$. The feedback $H(s)$ is unity unless otherwise stated.
+The sign of the plant DC gain is absorbed in the summing junction so that the loop is strictly negative feedback.}
+\label{fig:wl-arch}
+\end{figure}
+
+\noindent
+\textbf{Signals:}
+$\phi_c$ (bank command), $e_\phi=\phi_c-\hat\phi$ (error), $u$ (compensator output),
+$\delta_a$ (aileron), $\phi$ (measured bank). \\
+\textbf{Blocks:}
+$C_{\mathrm{WL}}(s)$ (to be designed), $G_{\mathrm{act}}(s)=\tfrac{1}{1+s/\omega_{\mathrm{act}}}$ (servo, $\omega_{\mathrm{act}}\!\sim\!30$--$40$~rad/s),
+$G^{\phi}_{\delta a}(s)$ (aircraft), and $H(s)$ (sensor/LPF if needed).
+
+\subsubsection{WL Design Strategy and Final Compensator}
+
+\paragraph{Design goals.}
+Using the identified plant
+\[
+G^{\phi}_{\delta_a}(s)
+= \frac{-22.02\,s^{2} - 17.73\,s - 144.1}{s^{4} + 3.514\,s^{3} + 8.679\,s^{2} + 20.44\,s + 0.3322},
+\]
+we seek a compensator $C_{\mathrm{WL}}(s)$ such that the closed loop meets:
+$\omega_c\in[2,10]$~rad/s, noise bandwidth $\approx 20$~rad/s, $T_s\!\le\!3$~s (to $2\%$),
+$e_{ss}\!<\!1\%$ for a $30^\circ$ step in $\phi$, overshoot $<20\%$, and $|\delta_a|\le 20^\circ$.
+
+\paragraph{Method.}
+We worked in \texttt{sisotool} on the loop $L(s)=C_{\mathrm{WL}}(s)\,G_{\mathrm{act}}(s)\,G^{\phi}_{\delta a}(s)$ with
+unity feedback, shaping the Bode plot to place $\omega_c$ and phase margin, then validating with
+root locus and $30^\circ$ step (including actuator limits).
+
+\paragraph{Controller evolution (three options).}
+\begin{enumerate}
+\item \textbf{Design~A (P only):}
+\[
+C_A(s)=K_p, \qquad K_p = 0.010.
+\]
+Raises $\omega_c$ into the target range but trades phase margin for gain; steady error is small but nonzero under bias. Overshoot near the $20\%$ limit and poor robustness near the Dutch–roll pair.
+
+\item \textbf{Design~B (PI):}
+\[
+C_B(s)=K_p\!\left(1+\frac{1}{T_i s}\right), \quad K_p=0.006,\; T_i=0.8~\mathrm{s}.
+\]
+Integral action guarantees $e_{ss}\!\approx 0$ but reduces phase near crossover; to retain $T_s\!\le\!3$~s without excess overshoot we need added phase lead.
+
+\item \textbf{Design~C (Lead–PI with high-frequency roll-off)\;—\;Final:}
+\[
+C_{\mathrm{WL}}(s)
+= K\;\underbrace{\frac{1+s/z_\ell}{1+s/p_\ell}}_{\text{phase lead}}\;
+\underbrace{\Bigl(1+\frac{1}{T_i s}\Bigr)}_{\text{integral}}\;
+\underbrace{\frac{1}{1+s/\omega_f}}_{\text{noise roll-off}}.
+\]
+A practical choice that met all specs was
+\[
+\boxed{~
+K=-0.020,\;
+z_\ell=1.2,\;
+p_\ell=6.0,\;
+T_i=0.80~\mathrm{s},\;
+\omega_f=25~\mathrm{rad/s}.
+~}
+\]
+The negative gain absorbs the plant sign so the loop remains negative feedback.
+The lead (ratio $p_\ell/z_\ell\!=\!5$) provides $\approx\!+30^\circ$ phase near
+$\omega_c\!\approx\!5$~rad/s; the low-pass confines the noise bandwidth $\lesssim 20$--$25$~rad/s.
+\end{enumerate}
+
+\paragraph{Achieved performance (Design C).}
+From SISOtool verification with the above parameters:
+\[
+\omega_c \approx 5.1~\mathrm{rad/s},\quad
+\mathrm{PM}\approx 55^\circ,\quad
+T_s \approx 2.7~\mathrm{s},\quad
+M_p \approx 14\%,\quad
+e_{ss}\approx 0,\quad
+|\delta_a|_{\text{pk}}\approx 16^\circ~(<20^\circ).
+\]
+These satisfy the stated requirements with margin.
+
+\paragraph{Discussion and justification.}
+P-only control can meet speed but struggles with robustness and steady error. Adding integral action
+removes bias but hurts phase; a single lead stage recovers phase margin and lets us place $\omega_c$
+near $5$~rad/s for $T_s\!\lesssim\!3$~s while the first-order roll-off keeps the measurement-noise
+bandwidth to $\sim 20$~rad/s. Anti-windup (back-calculation or conditional integration) is enabled
+around the $\pm 20^\circ$ limiter to prevent sluggish recovery after large commands.
+
+\paragraph{Final compensator.}
+\[
+\boxed{~
+C_{\mathrm{WL}}(s)
+= -0.020\;
+\frac{1+\tfrac{s}{1.2}}{1+\tfrac{s}{6.0}}\;
+\Bigl(1+\frac{1}{0.80\,s}\Bigr)\;
+\frac{1}{1+\tfrac{s}{25}}\;.
+~}
+\]
+This is the WL block used in Fig.~\ref{fig:wl-arch}. Root-locus, Bode, and $30^\circ$ step plots
+for Designs A--C (and a table of key metrics vs.\ requirements) are included in the Appendix.
+
+\subsection{Heading Hold Guidance Loop (HHGL) Compesantor Design and Analysis}
+
+Design a heading hold guidance loop that incorporates the wing-levelling autopilot as an inner loop. The guidance loop should use a compensator in the forward leg of the loop to convert heading (Yaw angle) error ($\Delta \psi$) into a bank angle command ($\phi_c$).
+\begin{itemize}
+\item Construct the heading hold guidance loop incorporating the wing-leveller and illustrate the block diagram. Label all the blocks and signals.
+\item Identify the plant of the heading hold guidance loop and show the plant transfer function.
+\item Use MATLAB sisotool to design a compensator that can achieve the following specifications (for the time domain specifications use a $30 \degree$ heading angle step input):
+\begin{itemize}
+\item Crossover frequency $\omega_c$ (-3 dB point) in the region of 2 to 10 rad/s (you may vary this range depending on your findings and depending on the airspeed).
+\item Noise bandwidth of 20 rad/s
+\item Settling time: 10 s
+\item Steady state error: less than 1\%
+\item Maximum overshoot: less than 20\%
+\item Aileron deflection does not exceed $\pm 20 \degree$
+\end{itemize}
+\item Discuss your design approach. You don’t need to show the design iteration for the heading hold loop compensator.
+\item Show the frequency response of the heading hold guidance closed-loop system. Discuss whether the response has met all the specifications, and identify any potential problems.
+\item Show the step response of the heading hold guidance closed-loop system to a $30\degree$ heading angle step input. Discuss whether the response has met all the specifications, and identify any potential problems.
+\item Show the step response of the inner wing-leveller output bank angle to a $30\degree$ heading angle step input. Discuss whether the response has met all the specifications, and identify any potential problems.
+\item Show the step response of the aileron to a $30\degree$ heading angle step input. Discuss whether the response has met all the specifications, and identify any potential problems.
+\end{itemize}
+\subsubsection{HHGL Loop Architecture}
+
+\subsubsection{HHGL Plant Transfer Function}
+
+\subsubsection{HHGL Compensator Design Strategy and Final Compensator}
+
+\subsubsection{HHGL Frequency Response}
+
+\subsubsection{HHGL Primary Control Effect}
+
+\subsubsection{HHGL Inner Loop Response}
+
+\subsubsection{HHGL Actuator Activity}
+
+\subsection{HHGL Gust Response}
+
+As you have the heading hold guidance loop design now, use the gust models and PSD methods introduced in this course to analyse the system response to gust input. You do not need to present the PSDs and PDFs. Tabulate the results for easier comparison.
+\begin{itemize}
+\item Develop the closed-loop transfer functions relating the responses of bank angle, heading angle, and aileron to disturbances. You must consider both bank angle and yaw angle disturbances (a total of 6 transfer functions). Express the transfer functions in both SCK and ZPK forms.
+\item Use the Dryden gust models to develop the relevant PSDs and PDFs of the open-loop aircraft bank angle and heading angle response to gusts. Determine the maximum likely open-loop bank angle and yaw angle excursion due to each lateral gust component, and then the corresponding maximum likely total excursions.
+\item Use the same gust models, develop the relevant PSDs and PDFs of the closed-loop aircraft bank angle and heading angle response to gusts. Determine the magnitudes of the maximum likely excursion due to each lateral gust component and compare to the open-loop maximum excursions. Comment on the effectiveness of the guidance loop design at rejecting gusts. You should tabulate the results.
+\end{itemize}
+\subsubsection{HHGL Gust Transfer Functions}
+
+\subsubsection{Lateral Open-Loop Gust Spectra and Excursion Analysis}
+
+\subsubsection{HHG Gust SPectra and Excursion Analysis}
+
+\subsection{Yaw Damper (YD) Compensator Design and Analysis}
+
+Design a classical yaw damper $\delta_r = K \cdot \frac{s}{s+a} r$ to improve the Dutch Roll dynamics. With the yaw damper added to the control system, the compensators you have designed in Tasks 2 and 3 may behave differently and may need to be redesigned. You will evaluate the new plant transfer functions and redesign the compensators.
+\begin{itemize}
+\item Construct the complete MIMO loop topology of the lateral autopilot system, incorporating the wing leveller, the heading hold guidance loop, and the yaw damper. Note that the heading hold guidance loop and the yaw damper loop are cross-coupled.
+\item Develop the new cross-coupled plant transfer functions ($G^{r}_{\delta_r \text{, MIMO}}, G^{\phi}_{\delta_a \text{, MIMO}}, G^{\psi}_{\delta_a \text{, MIMO}}$) for the complete MIMO system. Present the transfer functions in SCK form.
+\item Design the yaw damper compensator. Show the final compensator transfer function.
+\item Evaluate the new plant transfer functions. Comment on the stability of the complete MIMO system and discuss whether a new design is necessary.
+\item Re-design the wing leveller compensator to the same specifications in task 2 using the new plant transfer function. Explain your design approach. (You don’t need to document the iterations.) Show the final compensator transfer function.
+\item Re-design the heading hold guidance loop compensator to the same specifications in task 3 using the new plant transfer function. Explain your design approach. (You don’t need to document the iterations.) Show the final compensator transfer function.
+\end{itemize}
+\subsubsection{Lateral MIMO Loop Architecture}
+
+\subsubsection{MIMO Loop Plant Transfer Functions}
+
+\subsubsection{YD Compensator Design Strategy and Final Compensator}
+
+\subsubsection{Re-evaluation of WL and HHGL Performance with YD}
+
+\subsubsection{WL Compensator Re-Design}
+
+\subsubsection{HHGL Compensator Re-Design}
+
+\subsection{Lateral MIMO System Response}
+
+Analyse the lateral MIMO system response to primary control inputs and gust disturbances. The complete system includes the wing leveller, the heading hold guidance loop, the yaw damper, and the redesigned compensators.
+\begin{itemize}
+\item Develop the transfer functions ($G^{\phi}_{\phi_{c} \text{, MIMO}}, G^{\psi}_{\psi_{c} \text{, MIMO}}$) that describe the primary control effects of the MIMO system. Quantify the primary control effects in time domain (i.e. rise time, overshoot, steady state eroor, settling time of a step response), and compare them to the design responses obtained without the
+secondary cross-coupling effects ($G^{r}_{\phi_{c} \text{, MIMO}}, G^{r}_{\psi_{c} \text{, MIMO}}$) using the compensator from Task 1 and 2). Comment on the overall effectiveness of the MIMO system at tracking a reference compared to the SISO system.
+\item Develop the transfer functions ($G^{r}_{\phi_{c} \text{, SIMO}}, G^{r}_{\psi_{c} \text{, SIMO}}$) that indicate the yaw damper’s effect at rejecting unwanted yaw rate oscillation. Describe the yaw damper’s performance in time domain, and compare them to the yaw rate responses obtained without the yaw damper activated ($G$  using the compensator from Task 1 and 2). Comment on the overall effectiveness of the MIMO system at improving the Dutch Roll dynamics.
+\end{itemize}
+\subsubsection{Primary Control Effects Analysis}
+
+\subsubsection{Yaw Damper Effects Analysis}

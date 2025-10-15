@@ -1,0 +1,124 @@
+\section{Longitudinal Autopilot Subsystem}
+
+The objective is to develop a vertical speed autopilot with auto-throttle that will make
+the aircraft track a specified vertical speed by using the elevator actuator while regulating
+airspeed with throttle.
+
+\subsection{Pitch Rate Autopilot (PRA) Compensator Design and Analysis}
+
+To overcome the inherent problem in using the elevator to directly control vertical speed, you need a pitch rate autopilot that seeks to use the elevator to control pitch rate. The final vertical speed guidance loop can then use pitch angle to control vertical speed.
+\begin{itemize}
+\item Determine $G^{q}_{\delta e}$ of the supplied aircraft.
+\item Construct a feedback loop that controls pitch rate q using the elevator and illustrate the block diagram. Label all the blocks and signals.
+\item Use MATLAB sisotool to design a compensator that can achieve the following
+specifications (for the time domain specifications use a 4◦/s pitch rate step input):
+\begin{itemize}
+\item Crossover frequency $\omega_c$ (-3 dB point) in the region of 2 to 10 rad/s (you may
+vary this range depending on your findings and depending on the airspeed).
+\item Noise bandwidth of 20 rad/s
+\item Settling time: 3 s
+\item Steady state error: less than 1\%
+\item Maximum overshoot: less than 20\%
+\item Elevator deflection does not exceed the limit.
+\end{itemize}
+\item You must investigate at least THREE options for the compensator. Document the evolution of your design. For each design iteration, show the compensator transfer function and how the responses improve with each design iteration using root locus, Bode plot, and step response. Tabulate the key responses and compare them to the specifications.
+\item Explain your design approach and justify your choices. Discuss whether there is any room for improvement for your final design.
+\end{itemize}
+
+\subsubsection{PRA Plant Transfer Function}
+
+\subsubsection{PRA Loop Architecture}
+
+\subsubsection{PRA Design Strategy and Final Compensator}
+
+Describe the three options and your design approach. Tabulate the key responses and compare them to the specifications. If the final compensator meets all specifications, describe any room for improvement. If some specifications are not met, describe the challenges and suggestions for how to address them if you have more time.
+
+\subsection{Vertical Speed Guidance Loop (VSGL) Compensator Design and Analysis}
+
+Design a vertical speed guidance loop that incorporates the pitch rate autopilot as an inner loop. The guidance loop should use a compensator in the forward leg of the loop to convert vertical speed error into a pitch rate command ($q_c$).
+\begin{itemize}
+\item Construct the vertical speed guidance loop incorporating the pitch rate autopilot and illustrate the block diagram. Label all the blocks and signals.
+\item Identify the plant of the vertical speed guidance loop and show the plant transfer function.
+\item Use MATLAB sisotool to design a compensator that can achieve the following specifications (for the time domain specifications, use a 500 ft/min vertical speed step input): 
+\item Crossover frequency $\omega_c$ (-3 dB point) in the region of 0.5 to 2 rad/s (you may vary this range depending on your findings and depending on the airspeed).
+\begin{itemize}
+\item Noise bandwidth of 20 rad/s
+\item Rise time: 3 s
+\item Settling time: 10 s
+\item Steady state error: less than 1\%
+\item Maximum overshoot: less than 20\%
+\item Elevator deflection does not exceed the limit.
+\end{itemize}
+\item Discuss your design approach. You don’t need to show the design iteration for the vertical speed loop compensator.
+\item Show the frequency response of the vertical speed guidance closed-loop system. Discuss whether the response has met all the specifications, and identify any potential problems.
+\item Show the step response of the vertical speed to a 500 ft/min vertical speed step input. Discuss whether the response has met all the specifications, and identify any potential problems.
+\item Show the step response of the inner loop pitch rate to a 500 ft/min vertical speed step input. Discuss whether the response is reasonable, and identify any potential problems.
+\item Show the step response of the inner loop elevator deflection to a 500 ft/min vertical speed step input. Discuss whether the response is reasonable, and identify any potential problems.
+\end{itemize}
+\subsubsection{VSGL Loop Architecture}
+
+\subsubsection{VSGL Plant Transfer Function}
+
+\subsubsection{VSGL Compensator Design Strategy and Final Compensator}
+
+\subsubsection{VSGL Frequency Response}
+
+\subsubsection{VSGL Primary Control Effect}
+
+% This is the Vs step response to 500 ft/min Vs command.
+
+\subsubsection{VSGL Inner Loop Response}
+
+% This is the pitch rate step response to 500 ft/min Vs command.
+
+\subsubsection{VSGL Actuator Activity}
+
+% This is the elevator step response to 500 ft/min Vs command.
+
+\subsection{VSAGL Gust Response}
+
+As you have the vertical speed guidance loop design now, use the gust models and PSD methods introduced in this course to analyse the system response to gust input. You do not need to present the PSDs and PDFs. Tabulate the results for easier comparison.
+\begin{itemize}
+\item Develop the closed-loop transfer functions relating the responses of pitch rate, vertical speed, and elevator to disturbances. You must consider both vertical speed and pitch rate disturbances (a total of 6 transfer functions). Express the transfer functions in both SCK and ZPK forms.
+\item Use the Dryden gust models to develop the relevant PSDs and PDFs of the open-loop aircraft pitch rate and vertical speed response to gusts. Determine the maximum likely open-loop pitch rate and vertical speed excursion due to each longitudinal gust component, and then the corresponding maximum likely total excursions.
+\item Use the same gust models, develop the relevant PSDs and PDFs of the closed-loop aircraft pitch rate and vertical speed response to gusts. Determine the magnitudes of the maximum likely excursion due to each longitudinal gust component and compare them to the open-loop maximum excursions. Comment on the effectiveness of the guidance loop design at rejecting gusts. You should tabulate the results.
+\end{itemize}
+\subsubsection{VSGL Gust Transfer Functions}
+
+\subsubsection{Longitudinal Subsystem Open-Loop Gust Spectra and Excursion
+Analysis}
+
+\subsubsection{VSGL Gust Spectra and Excursion Analysis}
+
+\subsection{Auto Throttle (AT) Compensator Design and Analysis}
+
+Design an auto-throttle control system. This loop will convert airspeed error into a throttle command. The design procedure is similar to Task 2.
+\begin{itemize}
+\item Construct the complete MIMO loop topology of the longitudinal autopilot system, incorporating the pitch rate autopilot, the vertical speed guidance loop, and the auto-throttle. Note that the vertical speed loop and the auto-throttle loop
+are cross-coupled. The effect of the throttle on pitch rate is small and can be ignored.
+\item Develop the new cross-coupled plant transfer functions $G^{u}_{\delta T \text{, MIMO}}$, and $G^{V_s}_{\delta e \text{, MIMO}}$ for the complete MIMO system. Present the transfer functions in SCK form.
+\item Design the compensator to the same specifications as Task 2. Ensure that you evaluate the plant dynamics with the vertical speed system coupling effects considered. The compensator should be designed for this plant. Show the final
+compensator transfer function.
+\item Check if the pitch rate autopilot and the vertical speed guidance loop compensator should be redesigned. If necessary, redesign  them to the same specifications in tasks 2 and 3.
+\end{itemize}
+\subsubsection{Longitudinal MIMO Loop Architecture}
+
+\subsubsection{MIMO Loop Plant Transfer Functions}
+
+\subsubsection{AT Compensator Design Strategy}
+
+\subsubsection{Consideration for VSGL Compensator Redesign}
+
+\subsection{Longitudinal MIMO System Response}
+
+Analyse the longitudinal MIMO system response to primary control inputs and gust disturbances. The complete system includes the pitch rate controller, the vertical speed guidance loop, and the auto-throttle.
+
+\begin{itemize}
+\item Develop the transfer functions ($G^{u}_{u_C \text{, MIMO}}$, $G^{V_s}_{V_{s_{c \text{, MIMO}}}}$) that describe the primary control effects of the MIMO system. Quantify the primary control effects in time domain (i.e. rise time, overshoot, steady state error, settling time of a step response), and compare them to the responses obtained without the secondary cross-coupling effects ($G^{u}_{u_C \text{, SIMO}}$, $G^{V_s}_{V_{s_{c \text{, SIMO}}}}$). Comment on the overall effectiveness of the MIMO system at tracking a reference compared to the SISO system.
+
+\item Develop the transfer functions ($G^{V_s}_{u_C \text{, MIMO}}$, $G^{u}_{V_{s_{c \text{, MIMO}}}}$) that describe the secondary effects of the MIMO system. Quantify the secondary effects in time domain (i.e. rise time, overshoot, steady state error, settling time of a step response), and compare them to the responses obtained without the cross-coupling effects ($G^{V_s}_{u_C \text{, SIMO}}$, $G^{u}_{V_{s_{c \text{, SIMO}}}}$). Comment on the overall effectiveness of the MIMO system at minimising the secondary effects compared to the SISO system.
+\end{itemize}
+
+\subsubsection{Primary Control Effects Analysis}
+
+\subsubsection{Secondary Control Effects Analysis}

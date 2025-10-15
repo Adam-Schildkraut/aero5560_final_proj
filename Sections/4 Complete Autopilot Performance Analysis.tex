@@ -1,0 +1,22 @@
+\section{Complete Autopilot Performance Analysis}
+
+The final step of this project is to implement both longitudinal and lateral controllers in the
+nonlinear simulation and assess their performance.
+
+To verify that the controllers you have developed using the linear assumptions are realisable in the time domain, implement the control and guidance laws in the nonlinear simulation by representing your controllers as a state-space system.
+
+\subsection{Nonlinear Simulation Implementation Strategy}
+
+Implement the complete autopilot in the non-linear simulation, including pitch rate autopilot, vertical speed guidance loop, auto-throttle, wing leveller, heading hold guidance loop and yaw damper. Explain how you implement the controllers in the time domain and the non-linear simulation code.
+
+\subsection{Longitudinal Subsystem Performance Comparison}
+
+Command a vertical speed step input of 500 ft/min and plot the step responses of vertical speed, pitch rate, elevator deflection, airspeed, and throttle setting. Compare the responses to those obtained from the linear simulations. Discuss the key differences and what caused them.
+
+\subsection{Lateral Subsystem Performance Comparison}
+
+Command a 30-degree heading angle step input and plot the step responses of heading, bank angle, aileron deflection, yaw rate, and rudder deflection. Compare the responses to those obtained from the linear simulations. Discuss the key differences and what caused them.
+
+\subsection{Large Input Consideration}
+
+Discuss what problems can be expected if a large input is commanded (e.g. a large vertical speed input)? How could this be dealt with when implementing the control system? Demonstrate your approach in the non-linear simulation.

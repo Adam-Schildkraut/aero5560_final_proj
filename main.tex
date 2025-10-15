@@ -1,0 +1,163 @@
+\documentclass[11pt]{article}
+\usepackage{preamble}
+\usepackage{bm}
+\usepackage{pdfpages}
+\usepackage{color,soul}
+\usepackage{stdclsdv}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+% --- TikZ styles used in the diagram ---
+\tikzset{
+  block/.style = {draw, thick, rectangle, minimum height=10mm, minimum width=14mm, align=center},
+  sum/.style   = {draw, thick, circle, inner sep=0pt, minimum size=5mm},
+  >=Latex
+}
+\setlength\parindent{0pt}
+
+% \usepackage{xcolor}
+% \usepackage{pythonhighlight}
+
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{}
+\pagestyle{fancy}
+\linespread{1}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[RE,LO]{\ifthenelse{\value{page}=0}{}{}}
+
+\renewcommand{\contentsname}{Table of Contents}
+
+\begin{document}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\begin{flushright}
+\includegraphics[width=0.3\textwidth]{images/usydNew.png}\\[2cm]
+\end{flushright}
+
+\center 
+
+
+\textsc{\LARGE The University of Sydney}\\[0.75cm]
+\textsc{\Large School of Aerospace, Mechanical and Mechatronic Engineering}\\[1cm]
+
+\textsc{\Large AERO5560: Flight Mechanics 2}\\[0.25cm] 
+
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Aircraft Closed-Loop Control System Design and Analysis}\\[0.4cm] 
+{ \Large \bfseries Group 6 }\\[0.2cm] 
+\HRule \\[1.25cm]
+ 
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\textsc{\textbf{AUTHORS}}\\
+
+\textsc{Adam Schildkraut}\\
+\textsc{Allan Dong}\\
+\textsc{Kenneth Chea}\\
+\textsc{Raymond Trinh}\\
+\textsc{Joshua Kay}\\
+\textsc{Lucas Sedeyn}\\
+\textsc{Xinwei Choot}\\
+
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large\textbf{SID}\\
+\textsc{520457074}\\
+\textsc{TBC}\\
+\textsc{TBC}\\
+\textsc{TBC}\\
+\textsc{TBC}\\
+\textsc{TBC}\\
+\textsc{TBC}\\
+
+\end{flushright}
+\end{minipage}\\[1.5cm]
+
+\vfill
+
+\end{titlepage}
+\newpage
+\pagenumbering{arabic}
+\cfoot{}
+\rhead{}
+\thispagestyle{fancy}
+\pagestyle{fancy}
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\newpage
+\subfile{./Sections/0 Executive Summary}
+
+\newpage
+\tableofcontents
+\addcontentsline{toc}{section}{Table of Contents}
+\newpage
+\pagenumbering{arabic}
+
+\newpage
+\subfile{./Sections/1 Introduction}
+
+\newpage
+\subfile{./Sections/2 Longitudinal Autopilot Subsystem}
+
+\newpage
+\subfile{./Sections/3 Lateral Autopilot Subsystem}
+
+\newpage
+\subfile{./Sections/4 Complete Autopilot Performance Analysis}
+
+\newpage
+\subfile{./Sections/5 Off-Design Performance Analysis}
+
+\newpage
+\subfile{./Sections/6 Concluding Remarks}
+
+\newpage
+
+\pagenumbering{roman}
+\setcounter{page}{1}
+% \bibliographystyle{ieee}
+\pagebreak
+\bibliographystyle{ieee}
+\bibliography{bibliography}
+
+\newpage
+
+\renewcommand{\thepage}{A.\arabic{page}}
+\setcounter{page}{1}
+\appendix
+\subfile{./Sections/Appendix A}
+
+\end{document}
