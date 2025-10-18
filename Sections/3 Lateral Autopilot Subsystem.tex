@@ -75,12 +75,7 @@ G^{\phi}_{\delta_a}(s)
 \label{eq:Gphi_zpk}
 \end{equation}
 
-The plant exhibits:
-\begin{itemize}
-\item \textbf{Spiral mode}: slow pole at $s=-0.007$~rad/s (near-neutral stability)
-\item \textbf{Roll subsidence}: fast pole at $s=-6.68$~rad/s
-\item \textbf{Dutch roll}: complex pair at $s = -0.167 \pm 1.41j$ with $\zeta=0.117$ (lightly damped)
-\end{itemize}
+The plant exhibits three distinct modes: \textbf{Spiral mode} with a slow pole at $s=-0.007$~rad/s (near-neutral stability); \textbf{Roll subsidence} with a fast pole at $s=-6.68$~rad/s; and \textbf{Dutch roll} characterized by a complex pair at $s = -0.167 \pm 1.41j$ with $\zeta=0.117$ (lightly damped).
 
 The negative DC gain indicates opposite polarity (positive aileron produces negative roll moment for this aircraft), which is absorbed into the feedback architecture.
 
@@ -157,11 +152,12 @@ C_A(s) = K_p, \qquad K_p = -0.020
 The negative gain absorbs the plant's negative DC gain to maintain negative feedback topology.
 
 \textbf{Analysis:}
-\begin{itemize}
-\item \textbf{Root Locus:} Increasing $K_p$ moves the dominant poles left (faster response) but reduces damping ratio of the Dutch roll mode. At $K_p=-0.020$, closed-loop poles are at $s = -4.82 \pm 6.29j$ ($\zeta=0.61$, $\omega_n=7.92$~rad/s). Figure~\ref{fig:design_A_rlocus} shows the root locus with closed-loop pole locations marked.
-\item \textbf{Bode Plot:} Crossover frequency $\omega_c \approx 3.2$~rad/s with phase margin PM $\approx 42^\circ$. Insufficient phase margin indicates poor robustness (Figure~\ref{fig:design_A_bode}).
-\item \textbf{Step Response:} Rise time 0.52~s, overshoot 22\%, settling time 3.8~s. Steady-state error $\approx 3\%$ due to lack of integral action (Figure~\ref{fig:design_A_step}).
-\end{itemize}
+
+\textbf{Root Locus:} Increasing $K_p$ moves the dominant poles left (faster response) but reduces damping ratio of the Dutch roll mode. At $K_p=-0.020$, closed-loop poles are at $s = -4.82 \pm 6.29j$ ($\zeta=0.61$, $\omega_n=7.92$~rad/s). Figure~\ref{fig:design_A_rlocus} shows the root locus with closed-loop pole locations marked.
+
+\textbf{Bode Plot:} Crossover frequency $\omega_c \approx 3.2$~rad/s with phase margin PM $\approx 42^\circ$. Insufficient phase margin indicates poor robustness (Figure~\ref{fig:design_A_bode}).
+
+\textbf{Step Response:} Rise time 0.52~s, overshoot 22\%, settling time 3.8~s. Steady-state error $\approx 3\%$ due to lack of integral action (Figure~\ref{fig:design_A_step}).
 
 \begin{figure}[h!]
 \centering
@@ -206,11 +202,12 @@ C_B(s) = K_p\left(1 + \frac{1}{T_i\,s}\right), \qquad K_p = -0.080,\; T_i = 0.60
 \end{equation}
 
 \textbf{Analysis:}
-\begin{itemize}
-\item \textbf{Root Locus:} Integral action adds a pole at origin, changing root locus topology. Dominant closed-loop poles at $s = -3.45 \pm 8.12j$ ($\zeta=0.39$, $\omega_n=8.82$~rad/s) show reduced damping (Figure~\ref{fig:design_B_rlocus}).
-\item \textbf{Bode Plot:} Crossover frequency $\omega_c \approx 4.8$~rad/s with phase margin PM $\approx 38^\circ$. The integrator contributes $-90^\circ$ phase lag, degrading phase margin further (Figure~\ref{fig:design_B_bode}).
-\item \textbf{Step Response:} Fast rise (0.38~s) but significant overshoot (28\%) and oscillatory settling (4.2~s). Zero steady-state error confirmed. Actuator briefly saturates at 19.8$^\circ$ (Figure~\ref{fig:design_B_step}).
-\end{itemize}
+
+\textbf{Root Locus:} Integral action adds a pole at origin, changing root locus topology. Dominant closed-loop poles at $s = -3.45 \pm 8.12j$ ($\zeta=0.39$, $\omega_n=8.82$~rad/s) show reduced damping (Figure~\ref{fig:design_B_rlocus}).
+
+\textbf{Bode Plot:} Crossover frequency $\omega_c \approx 4.8$~rad/s with phase margin PM $\approx 38^\circ$. The integrator contributes $-90^\circ$ phase lag, degrading phase margin further (Figure~\ref{fig:design_B_bode}).
+
+\textbf{Step Response:} Fast rise (0.38~s) but significant overshoot (28\%) and oscillatory settling (4.2~s). Zero steady-state error confirmed. Actuator briefly saturates at 19.8$^\circ$ (Figure~\ref{fig:design_B_step}).
 
 \begin{figure}[h!]
 \centering
@@ -273,22 +270,15 @@ The lead ratio $p_\ell/z_\ell = 12.6$ provides maximum phase boost:
 occurring at $\omega_m = \sqrt{z_\ell \cdot p_\ell} \approx 7.9$~rad/s, strategically placed near crossover.
 
 \textbf{Optimization Methodology:}
-\begin{enumerate}
-\item \textbf{Stage 1 (Coarse Search):} Evaluated 21,600 combinations over broad ranges: $K \in [0.03,0.30]$, $z_\ell \in [0.3,2.5]$, $p_\ell \in [5.0,25.0]$, $T_i \in [0.25,1.50]$. Constraints: PM $>50^\circ$, dominant poles $\zeta > 0.40$. Cost function: $J = T_s + w_1 M_p^2 + w_2(0.60-\zeta)^2$. Result: 8,150 valid solutions (37.7\%), best cost 0.374.
 
-\item \textbf{Stage 2 (Refined Search):} Narrowed search around Stage 1 optimum with finer resolution: $K \in [0.10,0.20]$, $z_\ell \in [1.5,2.5]$, $p_\ell \in [18.0,28.0]$, $T_i \in [0.50,0.85]$. Result: 21,011 valid solutions (97.3\%), best cost 0.339 (9.4\% improvement).
-\end{enumerate}
+\textbf{Stage 1 (Coarse Search):} Evaluated 21,600 combinations over broad ranges: $K \in [0.03,0.30]$, $z_\ell \in [0.3,2.5]$, $p_\ell \in [5.0,25.0]$, $T_i \in [0.25,1.50]$. Constraints: PM $>50^\circ$, dominant poles $\zeta > 0.40$. Cost function: $J = T_s + w_1 M_p^2 + w_2(0.60-\zeta)^2$. Result: 8,150 valid solutions (37.7\%), best cost 0.374.
+
+\textbf{Stage 2 (Refined Search):} Narrowed search around Stage 1 optimum with finer resolution: $K \in [0.10,0.20]$, $z_\ell \in [1.5,2.5]$, $p_\ell \in [18.0,28.0]$, $T_i \in [0.50,0.85]$. Result: 21,011 valid solutions (97.3\%), best cost 0.339 (9.4\% improvement).
 
 \textbf{Analysis (Design C):}
 
 \paragraph{Root Locus Analysis.}
-Figure~\ref{fig:design_C_rlocus} shows the root locus with all closed-loop poles well-damped:
-\begin{itemize}
-    \item Fast pair: $s = -41.07 \pm 13.86j$ ($\zeta=0.95$, $\omega_n=43.3$~rad/s) --- actuator dynamics
-    \item Dominant pair: $s = -6.59 \pm 10.96j$ ($\zeta=0.52$, $\omega_n=12.8$~rad/s) --- primary response poles
-    \item Slow pair: $s = -1.17 \pm 0.98j$ ($\zeta=0.76$, $\omega_n=1.53$~rad/s) --- integral action
-    \item Dutch roll (residual): $s = -0.177 \pm 1.36j$ ($\zeta=0.13$) --- inherent plant mode, minimal contribution to step response
-\end{itemize}
+Figure~\ref{fig:design_C_rlocus} shows the root locus with all closed-loop poles well-damped. The fast pair at $s = -41.07 \pm 13.86j$ ($\zeta=0.95$, $\omega_n=43.3$~rad/s) represents actuator dynamics. The dominant pair at $s = -6.59 \pm 10.96j$ ($\zeta=0.52$, $\omega_n=12.8$~rad/s) constitutes the primary response poles. The slow pair at $s = -1.17 \pm 0.98j$ ($\zeta=0.76$, $\omega_n=1.53$~rad/s) arises from integral action. Finally, the residual Dutch roll mode at $s = -0.177 \pm 1.36j$ ($\zeta=0.13$) is an inherent plant mode with minimal contribution to step response.
 
 \begin{figure}[h!]
 \centering
@@ -298,13 +288,7 @@ Figure~\ref{fig:design_C_rlocus} shows the root locus with all closed-loop poles
 \end{figure}
 
 \paragraph{Frequency Domain Analysis.}
-The open-loop Bode plot (Figure~\ref{fig:design_C_bode}) demonstrates exceptional robustness:
-\begin{itemize}
-    \item Crossover frequency: $\omega_c = 5.43$~rad/s (within spec)
-    \item Phase margin: PM $= 73.0^\circ$ (excellent robustness)
-    \item Gain margin: GM $= 12.6$~dB at 19.3~rad/s
-    \item Noise bandwidth: $\approx 19.5$~rad/s (roll-off effective at $>\omega_f$)
-\end{itemize}
+The open-loop Bode plot (Figure~\ref{fig:design_C_bode}) demonstrates exceptional robustness. The crossover frequency is $\omega_c = 5.43$~rad/s (within specification). The phase margin of PM $= 73.0^\circ$ indicates excellent robustness. The gain margin is GM $= 12.6$~dB at 19.3~rad/s. The noise bandwidth is approximately 19.5~rad/s, with roll-off effective at frequencies greater than $\omega_f$.
 
 \begin{figure}[h!]
 \centering
@@ -314,13 +298,7 @@ The open-loop Bode plot (Figure~\ref{fig:design_C_bode}) demonstrates exceptiona
 \end{figure}
 
 \paragraph{Linear Step Response.}
-Figure~\ref{fig:design_C_step} shows the ideal linear response (30$^\circ$ command):
-\begin{itemize}
-    \item Rise time: 0.24~s
-    \item Overshoot: 0\% (critically damped response)
-    \item Settling time (2\%): 0.34~s
-    \item Steady-state error: $<0.01\%$
-\end{itemize}
+Figure~\ref{fig:design_C_step} shows the ideal linear response to a 30$^\circ$ command. The rise time is 0.24~s with zero overshoot, indicating critically damped response. The settling time (2\%) is 0.34~s with steady-state error less than 0.01\%.
 
 \begin{figure}[h!]
 \centering
@@ -330,13 +308,7 @@ Figure~\ref{fig:design_C_step} shows the ideal linear response (30$^\circ$ comma
 \end{figure}
 
 \paragraph{Nonlinear Simulation with Actuator Saturation.}
-Figure~\ref{fig:nonlinear_response} presents the realistic nonlinear response with $\pm20^\circ$ actuator limits:
-\begin{itemize}
-    \item Actuator saturates initially at $+20.0^\circ$ for 0.12~s
-    \item Overshoot: 10.8\% (due to saturation nonlinearity)
-    \item Settling time (2\%): 3.42~s
-    \item No integrator windup observed (anti-windup effective with $k_{aw}=5$)
-\end{itemize}
+Figure~\ref{fig:nonlinear_response} presents the realistic nonlinear response with $\pm20^\circ$ actuator limits. The actuator saturates initially at $+20.0^\circ$ for 0.12~s, resulting in 10.8\% overshoot due to saturation nonlinearity. The settling time (2\%) is 3.42~s. No integrator windup is observed, confirming anti-windup effectiveness with $k_{aw}=5$.
 
 \begin{figure}[h!]
 \centering
@@ -387,21 +359,9 @@ Figure~\ref{fig:design_comparison} provides a visual comparison of the evolution
 
 \paragraph{Design Justification and Trade-offs.}
 
-\textbf{Why Lead-PI?}
-\begin{itemize}
-\item \textbf{Integral action} is essential for $e_{ss} < 1\%$ requirement (zero type-1 error).
-\item \textbf{Lead compensation} recovers phase margin lost to integrator, enabling higher crossover frequency while maintaining $\zeta > 0.5$ in dominant poles.
-\item \textbf{High-frequency roll-off} limits measurement noise amplification beyond $\omega_f$, critical for practical implementation with sensor noise.
-\end{itemize}
+\textbf{Why Lead-PI?} \textbf{Integral action} is essential for the $e_{ss} < 1\%$ requirement, providing zero type-1 error. \textbf{Lead compensation} recovers phase margin lost to the integrator, enabling higher crossover frequency while maintaining $\zeta > 0.5$ in dominant poles. \textbf{High-frequency roll-off} limits measurement noise amplification beyond $\omega_f$, which is critical for practical implementation with sensor noise.
 
-\textbf{Parameter Selection Rationale:}
-\begin{itemize}
-\item $K=-0.164$: Magnitude scaled to achieve $\omega_c \approx 5.4$~rad/s, balancing speed and robustness.
-\item $z_\ell = 2.2$~rad/s: Positioned below crossover to begin phase boost early.
-\item $p_\ell = 28$~rad/s: High ratio $p_\ell/z_\ell = 12.6$ maximizes phase contribution without excessive high-frequency gain.
-\item $T_i = 0.69$~s: Integral corner at $\omega_i = 1.44$~rad/s, low enough to not interfere with crossover region.
-\item $\omega_f = 28$~rad/s: Roll-off starts beyond crossover, preserving loop gain where needed while attenuating sensor noise.
-\end{itemize}
+\textbf{Parameter Selection Rationale:} The gain $K=-0.164$ is scaled to achieve $\omega_c \approx 5.4$~rad/s, balancing speed and robustness. The lead zero at $z_\ell = 2.2$~rad/s is positioned below crossover to begin phase boost early. The lead pole at $p_\ell = 28$~rad/s creates a high ratio $p_\ell/z_\ell = 12.6$ that maximizes phase contribution without excessive high-frequency gain. The integral time constant $T_i = 0.69$~s places the integral corner at $\omega_i = 1.44$~rad/s, low enough to not interfere with the crossover region. The roll-off frequency $\omega_f = 28$~rad/s starts beyond crossover, preserving loop gain where needed while attenuating sensor noise.
 
 \textbf{Anti-Windup Strategy:}
 Back-calculation anti-windup with gain $k_{aw}=5$ prevents integrator wind-up during actuator saturation. The saturated aileron signal is fed back to the controller, effectively "pausing" integral action when limits are reached.
@@ -418,21 +378,7 @@ Figure~\ref{fig:sensitivity_functions} shows the sensitivity $S(s) = 1/(1+L(s))$
 
 \paragraph{Room for Improvement.}
 
-The final design achieves all primary specifications, but several enhancements could be considered:
-
-\begin{enumerate}
-\item \textbf{Notch Filter for Dutch Roll:} The lightly-damped plant mode at 1.37~rad/s ($\zeta=0.13$) persists in closed loop. Adding a notch filter:
-\[
-C_{\text{notch}}(s) = \frac{s^2 + 2(0.13)(1.37)s + 1.37^2}{s^2 + 2(0.70)(1.37)s + 1.37^2}
-\]
-would improve passenger comfort by damping residual Dutch roll oscillations, though at the cost of increased controller complexity.
-
-\item \textbf{Reference Pre-filter:} A command pre-filter $F(s) = 1/(1+s/\omega_r)$ with $\omega_r \approx 4$~rad/s could smooth aggressive commands, reducing the 10.8\% overshoot caused by actuator saturation without changing loop dynamics.
-
-\item \textbf{Gain Scheduling:} Controller parameters were optimized for 120~knots at 400~ft. Performance could be maintained across the flight envelope by scheduling $K$, $z_\ell$, $p_\ell$ as functions of dynamic pressure $\bar{q}$ or airspeed $V$.
-
-\item \textbf{Actuator Rate Limiting:} Current design assumes instantaneous actuator response limited only by position. Adding rate constraints ($\dot{\delta}_a < 50^\circ$/s typical) would require model predictive control or adaptive anti-windup to prevent performance degradation.
-\end{enumerate}
+The final design achieves all primary specifications, but several enhancements could be considered. First, a \textbf{notch filter for Dutch roll} could address the lightly-damped plant mode at 1.37~rad/s ($\zeta=0.13$) that persists in closed loop. Adding a notch filter $C_{\text{notch}}(s) = \frac{s^2 + 2(0.13)(1.37)s + 1.37^2}{s^2 + 2(0.70)(1.37)s + 1.37^2}$ would improve passenger comfort by damping residual Dutch roll oscillations, though at the cost of increased controller complexity. Second, a \textbf{reference pre-filter} $F(s) = 1/(1+s/\omega_r)$ with $\omega_r \approx 4$~rad/s could smooth aggressive commands, reducing the 10.8\% overshoot caused by actuator saturation without changing loop dynamics. Third, \textbf{gain scheduling} could maintain performance across the flight envelope, as controller parameters were optimized for 120~knots at 400~ft; scheduling $K$, $z_\ell$, $p_\ell$ as functions of dynamic pressure $\bar{q}$ or airspeed $V$ would extend operating range. Fourth, \textbf{actuator rate limiting} considerations are warranted, as the current design assumes instantaneous actuator response limited only by position; adding rate constraints ($\dot{\delta}_a < 50^\circ$/s typical) would require model predictive control or adaptive anti-windup to prevent performance degradation.
 
 However, for the specified requirements and operating point, \textbf{Design C represents an excellent balance between performance, robustness, and implementation simplicity}. The 73$^\circ$ phase margin provides substantial robustness to modeling uncertainties and parameter variations.
 
