@@ -376,6 +376,18 @@
 
 \newcommand{\notetoself}[1]{\color{red}\Large{\textbf{\textit{TODO: #1}}}\normalsize\color{black}} % make temporary text inclusions big and red
 
+% Increase default font sizes in figures for academic readability
+\usepackage{pgfplots}
+\pgfplotsset{
+    every axis/.append style={
+        font=\large,
+        tick label style={font=\large},
+        label style={font=\Large},
+        legend style={font=\large},
+        title style={font=\Large}
+    }
+}
+
 
 \usepackage{hyperref}
 \makeatletter
