@@ -127,14 +127,24 @@ $G^{\phi}_{\delta a}(s)$ (aircraft), and $H(s)=1$ (unity sensor).
 \subsubsection{Design Requirements}
 
 The WL compensator must achieve the following specifications for a $30^\circ$ bank angle step input:
-\begin{itemize}
-\item Crossover frequency: $\omega_c \in [2,10]$~rad/s
-\item Noise bandwidth: $\approx 20$~rad/s
-\item Settling time (2\%): $T_s \le 3$~s
-\item Steady-state error: $e_{ss} < 1\%$
-\item Maximum overshoot: $M_p < 20\%$
-\item Aileron deflection: $|\delta_a| \le 20^\circ$
-\end{itemize}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Performance Metric} & \textbf{Requirement} & \textbf{Units} \\
+\midrule
+Crossover frequency & $\omega_c \in [2, 10]$ & rad/s \\
+Noise bandwidth & $\approx 20$ & rad/s \\
+Settling time (2\%) & $T_s \le 3$ & s \\
+Steady-state error & $e_{ss} < 1$ & \% \\
+Maximum overshoot & $M_p < 20$ & \% \\
+Aileron deflection & $|\delta_a| \le 20$ & deg \\
+\bottomrule
+\end{tabular}
+\caption{Wing leveller compensator design requirements for $30^\circ$ bank angle step input.}
+\label{tab:wl_requirements}
+\end{table}
 
 \subsubsection{Compensator Design Evolution}
 
