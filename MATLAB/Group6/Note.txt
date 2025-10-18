@@ -1,0 +1,8 @@
+Note:
+
+The provided flight data is generated from an older version of the MATLAB script. To use this flight data with the current non-linear simulation frame work, you must do the following conversion immediately after you have loaded your flightdata, e.g.:
+
+FlightData = FlightDataAircraft5;
+FlightData.Geometric = FlightData.Geo;
+FlightData.Inertial = FlightData.I;
+FlightData.Propeller = FlightData.Prop;
