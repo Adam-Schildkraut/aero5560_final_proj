@@ -169,10 +169,10 @@ The negative gain absorbs the plant's negative DC gain to maintain negative feed
 
 \textbf{Step Response:} Rise time 0.52~s, overshoot 22\%, settling time 3.8~s. Steady-state error $\approx 3\%$ due to lack of integral action (Figure~\ref{fig:design_A_step}).
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.48\textwidth]{../MATLAB/LaTeX_Exports/design_A_root_locus.pdf}
-\includegraphics[width=0.48\textwidth]{../MATLAB/LaTeX_Exports/design_A_bode.pdf}
+\input{../MATLAB/LaTeX_Exports/design_A_root_locus.tex}\hspace{0.5cm}%
+\input{../MATLAB/LaTeX_Exports/design_A_bode.tex}
 \caption{Design A analysis: (left) Root locus with closed-loop poles marked in red; (right) Open-loop Bode plot showing PM = 42°.}
 \label{fig:design_A_rlocus}
 \label{fig:design_A_bode}
@@ -180,7 +180,7 @@ The negative gain absorbs the plant's negative DC gain to maintain negative feed
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth]{../MATLAB/LaTeX_Exports/design_A_step.pdf}
+\resizebox{0.7\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_A_step.tex}}
 \caption{Design A: Closed-loop step response for 30° bank command showing 22\% overshoot and 3.8~s settling time.}
 \label{fig:design_A_step}
 \end{figure}
@@ -221,8 +221,8 @@ C_B(s) = K_p\left(1 + \frac{1}{T_i\,s}\right), \qquad K_p = -0.080,\; T_i = 0.60
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.48\textwidth]{../MATLAB/LaTeX_Exports/design_B_root_locus.pdf}
-\includegraphics[width=0.48\textwidth]{../MATLAB/LaTeX_Exports/design_B_bode.pdf}
+\resizebox{0.48\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_B_root_locus.tex}}
+\resizebox{0.48\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_B_bode.tex}}
 \caption{Design B analysis: (left) Root locus showing reduced damping from integral action; (right) Bode plot with PM = 38°.}
 \label{fig:design_B_rlocus}
 \label{fig:design_B_bode}
@@ -230,7 +230,7 @@ C_B(s) = K_p\left(1 + \frac{1}{T_i\,s}\right), \qquad K_p = -0.080,\; T_i = 0.60
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth]{../MATLAB/LaTeX_Exports/design_B_step.pdf}
+\resizebox{0.7\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_B_step.tex}}
 \caption{Design B: Closed-loop step response showing 28\% overshoot with zero steady-state error.}
 \label{fig:design_B_step}
 \end{figure}
@@ -292,7 +292,7 @@ Figure~\ref{fig:design_C_rlocus} shows the root locus with all closed-loop poles
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth]{../MATLAB/LaTeX_Exports/design_C_root_locus.pdf}
+\resizebox{0.7\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_C_root_locus.tex}}
 \caption{Design C: Root locus showing all closed-loop poles with excellent damping. Dominant poles at $\zeta=0.52$ provide fast, well-damped response.}
 \label{fig:design_C_rlocus}
 \end{figure}
@@ -302,7 +302,7 @@ The open-loop Bode plot (Figure~\ref{fig:design_C_bode}) demonstrates exceptiona
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.75\textwidth]{../MATLAB/LaTeX_Exports/design_C_bode.pdf}
+\resizebox{0.75\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_C_bode.tex}}
 \caption{Design C: Open-loop Bode plot showing crossover at 5.43~rad/s with phase margin of 73°. Lead compensation provides significant phase boost near crossover.}
 \label{fig:design_C_bode}
 \end{figure}
@@ -312,7 +312,7 @@ Figure~\ref{fig:design_C_step} shows the ideal linear response to a 30$^\circ$ c
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.7\textwidth]{../MATLAB/LaTeX_Exports/design_C_step.pdf}
+\resizebox{0.7\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_C_step.tex}}
 \caption{Design C: Linear closed-loop step response showing critically damped behavior with 0\% overshoot and 0.34~s settling time.}
 \label{fig:design_C_step}
 \end{figure}
@@ -322,7 +322,7 @@ Figure~\ref{fig:nonlinear_response} presents the realistic nonlinear response wi
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.95\textwidth]{../MATLAB/LaTeX_Exports/nonlinear_response.pdf}
+\resizebox{0.95\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/nonlinear_response.tex}}
 \caption{Design C: Nonlinear step response with actuator saturation. Top: bank angle showing 10.8\% overshoot; Middle: aileron deflection hitting ±20° limits; Bottom: controller output demonstrating anti-windup effectiveness.}
 \label{fig:nonlinear_response}
 \end{figure}
@@ -362,7 +362,7 @@ Figure~\ref{fig:design_comparison} provides a visual comparison of the evolution
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.95\textwidth]{../MATLAB/LaTeX_Exports/design_comparison.pdf}
+\resizebox{0.95\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/design_comparison.tex}}
 \caption{Design evolution comparison: (left) Open-loop magnitude response showing increasing crossover frequency and bandwidth; (right) Closed-loop step responses demonstrating reduced overshoot and improved settling from Design A to C.}
 \label{fig:design_comparison}
 \end{figure}
@@ -381,7 +381,7 @@ Figure~\ref{fig:sensitivity_functions} shows the sensitivity $S(s) = 1/(1+L(s))$
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{../MATLAB/LaTeX_Exports/sensitivity_functions.pdf}
+\resizebox{0.8\textwidth}{!}{\input{../MATLAB/LaTeX_Exports/sensitivity_functions.tex}}
 \caption{Sensitivity functions for Design C: $S(s)$ (blue) shows disturbance rejection capability, while $T(s)$ (red) indicates tracking bandwidth and noise attenuation characteristics.}
 \label{fig:sensitivity_functions}
 \end{figure}
