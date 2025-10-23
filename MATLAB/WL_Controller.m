@@ -855,9 +855,15 @@ end
 
 % Helper function to generate all figures for a design
 function generate_design_figures(label, C, G_act, G_plant, L, T, outdir)
-    % Set publication quality
+    % Add matlab2tikz to path if not already there
+    matlab2tikz_path = '/Users/adam/Library/Application Support/MathWorks/MATLAB Add-Ons/Collections/matlab2tikz_matlab2tikz/src';
+    if exist(matlab2tikz_path, 'dir')
+        addpath(matlab2tikz_path);
+    end
+
+    % Set publication quality - fonts will be controlled by LaTeX
     set(0, 'DefaultFigureColor', 'w');
-    set(0, 'DefaultAxesFontSize', 12);
+    set(0, 'DefaultAxesFontSize', 12);        % Base size for PGF
     set(0, 'DefaultAxesFontName', 'Times');
 
     % Handle case where C might be a scalar (P-only control)
@@ -869,7 +875,6 @@ function generate_design_figures(label, C, G_act, G_plant, L, T, outdir)
     fig = figure('Visible', 'off', 'Position', [0, 0, 1920, 1080], 'Units', 'pixels');
     rlocus(C*G_act*G_plant);
     grid on;
-    title(sprintf('Design %s: Root Locus', upper(label)));
 
     % Mark closed-loop poles
     hold on;
@@ -881,20 +886,23 @@ function generate_design_figures(label, C, G_act, G_plant, L, T, outdir)
         % Ignore legend errors in invisible figures
     end
 
+    % Export as PGF for LaTeX
+    matlab2tikz(fullfile(outdir, sprintf('design_%s_root_locus.tex', label)), ...
+        'standalone', false, 'showInfo', false);
+    % Also save PDF backup
     exportgraphics(fig, fullfile(outdir, sprintf('design_%s_root_locus.pdf', label)), ...
         'ContentType', 'vector');
-    saveas(fig, fullfile(outdir, sprintf('design_%s_root_locus.png', label)));
     close(fig);
 
     % 2. Bode Plot with margins
     fig = figure('Visible', 'off', 'Position', [0, 0, 1920, 1080], 'Units', 'pixels');
     margin(L);
     grid on;
-    title(sprintf('Design %s: Open-Loop Bode Plot', upper(label)));
 
+    matlab2tikz(fullfile(outdir, sprintf('design_%s_bode.tex', label)), ...
+        'standalone', false, 'showInfo', false);
     exportgraphics(fig, fullfile(outdir, sprintf('design_%s_bode.pdf', label)), ...
         'ContentType', 'vector');
-    saveas(fig, fullfile(outdir, sprintf('design_%s_bode.png', label)));
     close(fig);
 
     % 3. Step Response
@@ -903,22 +911,22 @@ function generate_design_figures(label, C, G_act, G_plant, L, T, outdir)
     grid on;
     ylabel('$\phi$ (rad)', 'Interpreter', 'latex');
     xlabel('Time (s)');
-    title(sprintf('Design %s: Step Response (30° command)', upper(label)));
 
+    matlab2tikz(fullfile(outdir, sprintf('design_%s_step.tex', label)), ...
+        'standalone', false, 'showInfo', false);
     exportgraphics(fig, fullfile(outdir, sprintf('design_%s_step.pdf', label)), ...
         'ContentType', 'vector');
-    saveas(fig, fullfile(outdir, sprintf('design_%s_step.png', label)));
     close(fig);
 
     % 4. Nichols Chart
     fig = figure('Visible', 'off', 'Position', [0, 0, 1920, 1080], 'Units', 'pixels');
     nichols(L);
     grid on;
-    title(sprintf('Design %s: Nichols Chart', upper(label)));
 
+    matlab2tikz(fullfile(outdir, sprintf('design_%s_nichols.tex', label)), ...
+        'standalone', false, 'showInfo', false);
     exportgraphics(fig, fullfile(outdir, sprintf('design_%s_nichols.pdf', label)), ...
         'ContentType', 'vector');
-    saveas(fig, fullfile(outdir, sprintf('design_%s_nichols.png', label)));
     close(fig);
 
     fprintf('  Generated figures for design %s\n', label);
@@ -1003,14 +1011,12 @@ subplot(3,1,1);
 plot(t, rad2deg(y), 'LineWidth', 1.5);
 grid on;
 ylabel('$\phi$ (deg)', 'Interpreter', 'latex');
-title('Bank Angle Response (with actuator saturation)');
 yline(30, '--k', 'LineWidth', 1);
 
 subplot(3,1,2);
 plot(t, rad2deg(da_hist), 'LineWidth', 1.5);
 grid on;
 ylabel('$\delta_a$ (deg)', 'Interpreter', 'latex');
-title('Aileron Deflection');
 yline(alim_deg, '--r', 'LineWidth', 1);
 yline(-alim_deg, '--r', 'LineWidth', 1);
 
@@ -1019,11 +1025,11 @@ plot(t, u_hist, 'LineWidth', 1.5);
 grid on;
 xlabel('Time (s)');
 ylabel('$u$ (controller output)', 'Interpreter', 'latex');
-title('Controller Output (pre-actuator)');
 
+matlab2tikz(fullfile(latex_export_dir, 'nonlinear_response.tex'), ...
+    'standalone', false, 'showInfo', false);
 exportgraphics(fig, fullfile(latex_export_dir, 'nonlinear_response.pdf'), ...
     'ContentType', 'vector');
-saveas(fig, fullfile(latex_export_dir, 'nonlinear_response.png'));
 close(fig);
 
 % Export design comparison (step responses)
@@ -1040,7 +1046,6 @@ plot(t2, y2, 'LineWidth', 1.2);
 plot(t3, y3, 'LineWidth', 2.0);
 ylabel('$\phi$ (rad)', 'Interpreter', 'latex');
 xlabel('Time (s)');
-title('Step Response Comparison');
 legend('Design A (P)', 'Design B (PI)', 'Design C (Lead-PI)', 'Location', 'best');
 yline(deg2rad(30), '--k', 'LineWidth', 0.5);
 
@@ -1048,12 +1053,12 @@ subplot(1,2,2);
 % Bode magnitude comparison
 bodemag(L_A, L_B, L, {0.01, 100});
 grid on;
-title('Open-Loop Magnitude Comparison');
 legend('Design A', 'Design B', 'Design C', 'Location', 'best');
 
+matlab2tikz(fullfile(latex_export_dir, 'design_comparison.tex'), ...
+    'standalone', false, 'showInfo', false);
 exportgraphics(fig, fullfile(latex_export_dir, 'design_comparison.pdf'), ...
     'ContentType', 'vector');
-saveas(fig, fullfile(latex_export_dir, 'design_comparison.png'));
 close(fig);
 
 % Export sensitivity functions
@@ -1064,12 +1069,12 @@ T_comp = Tphi;
 fig = figure('Visible', 'off', 'Position', [0, 0, 1920, 1080], 'Units', 'pixels');
 bodemag(S_sens, T_comp, {0.01, 100});
 grid on;
-title('Sensitivity and Complementary Sensitivity Functions');
 legend('$S$ (Sensitivity)', '$T$ (Complementary)', 'Interpreter', 'latex', 'Location', 'best');
 
+matlab2tikz(fullfile(latex_export_dir, 'sensitivity_functions.tex'), ...
+    'standalone', false, 'showInfo', false);
 exportgraphics(fig, fullfile(latex_export_dir, 'sensitivity_functions.pdf'), ...
     'ContentType', 'vector');
-saveas(fig, fullfile(latex_export_dir, 'sensitivity_functions.png'));
 close(fig);
 
 % Create performance comparison table
