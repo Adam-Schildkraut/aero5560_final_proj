@@ -861,10 +861,13 @@ function generate_design_figures(label, C, G_act, G_plant, L, T, outdir)
         addpath(matlab2tikz_path);
     end
 
-    % Set publication quality - fonts will be controlled by LaTeX
+    % Set publication quality with MASSIVE fonts for PDFs
     set(0, 'DefaultFigureColor', 'w');
-    set(0, 'DefaultAxesFontSize', 12);        % Base size for PGF
+    set(0, 'DefaultAxesFontSize', 28);          % HUGE fonts for readability
     set(0, 'DefaultAxesFontName', 'Times');
+    set(0, 'DefaultAxesLabelFontSizeMultiplier', 1.3);  % Even larger axis labels
+    set(0, 'DefaultLegendFontSize', 24);        % Large legend
+    set(0, 'DefaultLineLineWidth', 3);          % Thick lines
 
     % Handle case where C might be a scalar (P-only control)
     if isnumeric(C) && isscalar(C)
