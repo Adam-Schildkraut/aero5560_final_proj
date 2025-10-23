@@ -376,16 +376,35 @@
 
 \newcommand{\notetoself}[1]{\color{red}\Large{\textbf{\textit{TODO: #1}}}\normalsize\color{black}} % make temporary text inclusions big and red
 
-% Increase default font sizes in figures for academic readability
+% PGF/TikZ support for MATLAB-generated figures with customizable font sizes
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{units}
+
+% Enable FPU for handling large coordinates
+\usetikzlibrary{fpu}
+
 \pgfplotsset{
     every axis/.append style={
-        font=\large,
-        tick label style={font=\large},
-        label style={font=\Large},
-        legend style={font=\large},
-        title style={font=\Large}
-    }
+        scale only axis,                % Scale only axis, not text
+        width=6cm,                      % Smaller width so two fit side-by-side
+        height=4cm,                     % Proportional height
+        % Handle large numbers with automatic scaling
+        scaled ticks=true,
+        % Restrict domain to prevent dimension overflow in log plots
+        restrict x to domain=-20:20,    % In log coordinates
+        restrict y to domain=-500:500,  % Bode magnitude range
+        unbounded coords=jump,          % Skip out-of-bounds coords
+        % FORCE HUGE fonts by overriding tick label styles completely
+        every x tick label/.style={font=\LARGE},
+        every y tick label/.style={font=\LARGE},
+        every tick label/.style={font=\LARGE},
+        xlabel style={font=\huge},
+        ylabel style={font=\huge},
+        legend style={font=\Large, cells={anchor=west}},
+        tick label style={/pgf/number format/fixed, font=\LARGE},
+        max space between ticks=40,     % Fewer ticks for readability
+    },
 }
 
 
