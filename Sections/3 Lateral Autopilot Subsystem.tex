@@ -414,13 +414,20 @@ This controller is implemented in MATLAB/Simulink with anti-windup logic for the
 
 \subsection{Heading Hold Guidance Loop (HHGL) Compensator Design and Analysis}
 
-Design a heading hold guidance loop that incorporates the wing-levelling autopilot as an inner loop. The guidance loop should use a compensator in the forward leg of the loop to convert heading (Yaw angle) error ($\Delta \psi$) into a bank angle command ($\phi_c$).
+Design a heading hold guidance loop that incorporates the wing-levelling autopilot as an inner loop. The guidance loop should use a compensator in the forward leg of the loop to convert heading (yaw angle) error ($\Delta \psi$) into a bank angle command ($\phi_c$).
 
-\textit{[Content to be continued for HHGL design...]}
+\subsubsection{HHGL Loop Architecture}\label{sec:HHGL_architecture}
 
-\subsubsection{HHGL Loop Architecture}
+The heading hold guidance loop (HHGL) is constructed incorporating the wing-leveller as an inner loop. The block diagram will illustrate all blocks and signals with proper labeling.
 
 \subsubsection{HHGL Plant Transfer Function}
+
+Based on the loop architecture in Section \ref{sec:HHGL_architecture}, the HHGL plant transfer function is equal to the transfer function from the desired bank angle $\phi_c$ to the yaw angle $\psi$. This can be calculated as:
+
+\begin{align*}
+G_{\phi_c}^\psi (s) &= K_\phi \times \frac{1}{1 + K_\phi G_{\delta_a}^\phi} \times G_{\delta_a}^\psi \\
+&= 
+\end{align*}
 
 \subsubsection{HHGL Compensator Design Strategy and Final Compensator}
 
