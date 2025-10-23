@@ -241,9 +241,16 @@ Design a heading hold guidance loop that incorporates the wing-levelling autopil
 \item Show the step response of the inner wing-leveller output bank angle to a $30\degree$ heading angle step input. Discuss whether the response has met all the specifications, and identify any potential problems.
 \item Show the step response of the aileron to a $30\degree$ heading angle step input. Discuss whether the response has met all the specifications, and identify any potential problems.
 \end{itemize}
-\subsubsection{HHGL Loop Architecture}
+\subsubsection{HHGL Loop Architecture}\label{sec:HHGL_architecture}
 
 \subsubsection{HHGL Plant Transfer Function}
+
+Based on the loop architecture in Section \ref{sec:HHGL_architecture}, the HHGL plant transfer function is equal to the transfer function from the desired bank angle $\phi_c$ to the yaw angle $\psi$. This can be calculated as:
+
+\begin{align*}
+G_{\phi_c}^\psi (s) &= K_\phi \times \frac{1}{1 + K_\phi G_{\delta_a}^\phi} \times G_{\delta_a}^\psi \\
+&= 
+\end{align*}
 
 \subsubsection{HHGL Compensator Design Strategy and Final Compensator}
 
